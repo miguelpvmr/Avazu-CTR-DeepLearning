@@ -1,0 +1,16 @@
+# Datos
+Data/*.csv
+Data/*.gz
+
+# Jupyter
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.pyc
+
+# Entornos
+.env
+.venv/
+venv/
