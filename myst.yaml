@@ -1,0 +1,48 @@
+version: 1
+
+project:
+  id: 0b1d1295-cc9c-4c7a-b6ba-bd8037227486
+  title: "Predicción de Clics en Publicidad Digital"
+
+  authors:
+    - name: "Juan Camilo Mendoza Arango"
+      email: cjarango@uninorte.edu.co
+      orcid: 0000-0001-6872-8311
+      affiliations:
+        - name: Universidad del Norte
+          city: Barranquilla
+          country: Colombia
+      github: cjarango
+      corresponding: true
+
+    - name: "Miguel Ángel Pérez Vargas"
+      email: vargasmiguel@uninorte.edu.co
+      affiliations:
+        - name: Universidad del Norte
+          city: Barranquilla
+          country: Colombia
+      github: miguelpvmr
+      corresponding: true
+
+  exclude:
+    - src/**
+    - _build/**
+    - .myst/**
+    - app/**
+    - data/**
+    - docker/**
+    - .github/**
+    - tests/**
+    - .ruff_cache/**
+
+  toc:
+    - file: README.md
+      title: "Introducción"
+    - file: notebooks/01_exploratory_data_analysis.ipynb
+      title: "Análisis Exploratorio"
+
+site:
+  template: book-theme
+  github: https://github.com/miguelpvmr/Avazu-CTR-DeepLearning
+  options:
+    style: custom.css

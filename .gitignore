@@ -1,6 +1,7 @@
-# Datos
-Data/*.csv
-Data/*.gz
+# Data
+data/
+*.duckdb
+*.duckdb.wal
 
 # Jupyter
 .ipynb_checkpoints/
@@ -8,9 +9,55 @@ Data/*.gz
 
 # Python
 __pycache__/
+*.py[cod]
 *.pyc
+*.so
+build/
+dist/
+*.egg-info/
+.eggs/
+eggs/
+wheels/
+share/python-wheels/
 
-# Entornos
+# Environments
 .env
+.envrc
 .venv/
 venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Quality
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# Editors
+.vscode/
+.idea/
+.spyderproject/
+.spyproject
+.ropeproject
+
+# System
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# MyST
+_build/
+site/
+
+# Misc
+*.log
+tempCodeRunnerFile.py
+.pypirc
