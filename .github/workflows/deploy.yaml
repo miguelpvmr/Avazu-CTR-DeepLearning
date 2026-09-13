@@ -1,0 +1,43 @@
+name: Despliegue de MyST Site
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    environment:
+      name: github-pages
+      url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Instalar MyST
+        run: npm install -g mystmd
+
+      - name: Limpiar compilaciones anteriores
+        run: myst clean --all -y
+
+      - name: Construir el sitio (Build)
+        run: myst build --html
+        env:
+          BASE_URL: /${{ github.event.repository.name }}
+
+      - name: Desplegar en GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_build/html
+          force_orphan: true
