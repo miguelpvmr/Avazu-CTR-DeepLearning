@@ -1,19 +1,19 @@
-"""Convert Avazu CTR dataset files from gzip-compressed CSV to Snappy Parquet.
+"""Convert the Avazu CTR training file from gzip-compressed CSV to Parquet.
 
-This module reads the raw ``.gz`` files provided by the Avazu Click-Through
-Rate Prediction dataset, parses them in chunks to bound memory usage, and
-writes the result as Parquet files using Snappy compression. The output
-files are placed alongside the source files within ``data/raw`` so that
-downstream code can consume them directly.
+This module reads the raw ``train.gz`` file provided by the Avazu
+Click-Through Rate Prediction dataset, parses it in chunks to bound memory
+usage, and writes the result as a Snappy-compressed Parquet file. The
+output is placed alongside the source file within ``data/raw`` so that
+downstream code can consume it directly.
 
 The script is intended to be executed from the project root, that is, the
-directory that contains the ``data`` folder. For example:
+directory that contains the ``data`` folder:
 
     $ cd Avazu-CTR-DeepLearning
     $ python src/utils/convert_to_parquet.py
 
-The script is idempotent: if a target ``.parquet`` file already exists, the
-conversion for that file is skipped.
+The script is idempotent: if ``train.parquet`` already exists, the
+conversion is skipped.
 """
 
 from __future__ import annotations
@@ -40,11 +40,12 @@ logger = logging.getLogger(__name__)
 # Path configuration
 # ---------------------------------------------------------------------------
 # The script assumes it is executed from the project root, which is the
-# directory that contains the ``data`` folder. If the script is invoked
-# from another working directory, ``PROJECT_ROOT`` will be resolved
-# incorrectly and the source files will not be found.
+# directory that contains the ``data`` folder.
 PROJECT_ROOT: Path = Path.cwd()
 RAW_DIR: Path = PROJECT_ROOT / "data" / "raw"
+
+SOURCE_PATH: Path = RAW_DIR / "train.gz"
+TARGET_PATH: Path = RAW_DIR / "train.parquet"
 
 # ---------------------------------------------------------------------------
 # Column data types
@@ -138,7 +139,7 @@ def gzip_csv_to_snappy_parquet(
         compression="gzip",
         chunksize=chunk_size,
         dtype=DTYPES,
-    ) # type: ignore[call-overload]
+    )  # type: ignore[call-overload]
 
     writer: pq.ParquetWriter | None = None
     total_rows: int = 0
@@ -148,17 +149,12 @@ def gzip_csv_to_snappy_parquet(
             table = pa.Table.from_pandas(chunk, preserve_index=False)
 
             if writer is None:
-                # The first chunk defines the schema for the whole file.
                 writer = pq.ParquetWriter(
                     output_path,
                     table.schema,
                     compression="snappy",
                 )
             else:
-                # Cast subsequent chunks to the schema fixed by the first
-                # chunk. Without this, PyArrow may widen dictionary index
-                # types (e.g. int8 -> int16) as new unique values appear,
-                # causing a schema mismatch error at write time.
                 table = table.cast(writer.schema)
 
             writer.write_table(table)
@@ -181,47 +177,27 @@ def gzip_csv_to_snappy_parquet(
     )
 
 
-def convert_dataset_files(
-    file_stems: tuple[str, ...] = ("train", "test"),
-    raw_dir: Path = RAW_DIR,
-) -> None:
-    """Convert all dataset files matching the given stems from .gz to .parquet.
+def main() -> None:
+    """Run the conversion for the training file.
 
-    For each stem, the function looks for ``{stem}.gz`` inside ``raw_dir``.
-    If the corresponding ``{stem}.parquet`` already exists, the conversion
-    is skipped to keep the operation idempotent.
-
-    Args:
-        file_stems: Names of the dataset splits to convert, without file
-            extension. Defaults to ``("train", "test")``.
-        raw_dir: Directory that contains both the source ``.gz`` files and
-            the resulting ``.parquet`` files.
-
-    Returns:
-        None.
+    Skips the conversion if the target Parquet file already exists.
     """
-    if not raw_dir.exists():
+    if not RAW_DIR.exists():
         raise FileNotFoundError(
-            f"Raw data directory not found: {raw_dir}. "
+            f"Raw data directory not found: {RAW_DIR}. "
             "Make sure the script is executed from the project root."
         )
 
-    for stem in file_stems:
-        source_path = raw_dir / f"{stem}.gz"
-        target_path = raw_dir / f"{stem}.parquet"
+    if not SOURCE_PATH.exists():
+        raise FileNotFoundError(f"Source file not found: {SOURCE_PATH}")
 
-        if not source_path.exists():
-            logger.warning("Source file not found, skipping: %s", source_path)
-            continue
+    if TARGET_PATH.exists():
+        logger.info("Target already exists, skipping: %s", TARGET_PATH.name)
+        return
 
-        if target_path.exists():
-            logger.info("Target already exists, skipping: %s", target_path.name)
-            continue
-
-        gzip_csv_to_snappy_parquet(source_path, target_path)
-
+    gzip_csv_to_snappy_parquet(SOURCE_PATH, TARGET_PATH)
     logger.info("Conversion process finished.")
 
 
 if __name__ == "__main__":
-    convert_dataset_files()
+    main()

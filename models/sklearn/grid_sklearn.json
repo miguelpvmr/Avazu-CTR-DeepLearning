@@ -1,0 +1,1594 @@
+{
+  "metadata": {
+    "grid_size": 54,
+    "cv": 5,
+    "scoring": "roc_auc",
+    "total_wall_time": 10129.05244922638
+  },
+  "results": [
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.744119495416891,
+        0.7425148890716514,
+        0.7442175970303121,
+        0.7449109705782846,
+        0.7427372144410538
+      ],
+      "fold_times": [
+        36.42935633659363,
+        39.6024112701416,
+        30.382673025131226,
+        34.538302183151245,
+        26.993897676467896
+      ],
+      "mean_auc": 0.7437000333076387,
+      "std_auc": 0.0009210620795050712,
+      "mean_fit_time": 33.589328098297116,
+      "total_fit_time": 167.9466404914856
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.744119495416891,
+        0.7425148890716514,
+        0.7442175970303121,
+        0.7449109705782846,
+        0.7427372144410538
+      ],
+      "fold_times": [
+        36.27123999595642,
+        39.10737681388855,
+        30.822890043258667,
+        33.06337261199951,
+        25.731601238250732
+      ],
+      "mean_auc": 0.7437000333076387,
+      "std_auc": 0.0009210620795050712,
+      "mean_fit_time": 32.99929614067078,
+      "total_fit_time": 164.99648070335388
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.744119495416891,
+        0.7425148890716514,
+        0.7442175970303121,
+        0.7449109705782846,
+        0.7427372144410538
+      ],
+      "fold_times": [
+        34.60197830200195,
+        37.32359313964844,
+        29.055675268173218,
+        32.730125188827515,
+        25.643718957901
+      ],
+      "mean_auc": 0.7437000333076387,
+      "std_auc": 0.0009210620795050712,
+      "mean_fit_time": 31.871018171310425,
+      "total_fit_time": 159.35509085655212
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.7430903402277059,
+        0.7415344243426151,
+        0.7435347387443028,
+        0.7442849318889107,
+        0.7396122458304192
+      ],
+      "fold_times": [
+        26.80164361000061,
+        21.20569396018982,
+        23.567028522491455,
+        24.974608898162842,
+        26.266945123672485
+      ],
+      "mean_auc": 0.7424113362067907,
+      "std_auc": 0.0016635697673613654,
+      "mean_fit_time": 24.563184022903442,
+      "total_fit_time": 122.81592011451721
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.7430903402277059,
+        0.7415344243426151,
+        0.7435347387443028,
+        0.7442849318889107,
+        0.7396122458304192
+      ],
+      "fold_times": [
+        26.796768188476562,
+        21.193820238113403,
+        23.516457557678223,
+        24.789928674697876,
+        25.646153211593628
+      ],
+      "mean_auc": 0.7424113362067907,
+      "std_auc": 0.0016635697673613654,
+      "mean_fit_time": 24.388625574111938,
+      "total_fit_time": 121.94312787055969
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.7430903402277059,
+        0.7415344243426151,
+        0.7435347387443028,
+        0.7442849318889107,
+        0.7396122458304192
+      ],
+      "fold_times": [
+        26.875850677490234,
+        21.2128586769104,
+        23.52664089202881,
+        24.805062532424927,
+        25.923295259475708
+      ],
+      "mean_auc": 0.7424113362067907,
+      "std_auc": 0.0016635697673613654,
+      "mean_fit_time": 24.468741607666015,
+      "total_fit_time": 122.34370803833008
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.7417498471168857,
+        0.740116897055959,
+        0.7447008508116727,
+        0.7441878588300384,
+        0.7398326764569665
+      ],
+      "fold_times": [
+        26.544969081878662,
+        40.545435667037964,
+        43.711692333221436,
+        28.056326150894165,
+        25.34978938102722
+      ],
+      "mean_auc": 0.7421176260543044,
+      "std_auc": 0.002015841582407083,
+      "mean_fit_time": 32.84164252281189,
+      "total_fit_time": 164.20821261405945
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.7417498471168857,
+        0.740116897055959,
+        0.7447008508116727,
+        0.7441878588300384,
+        0.7398326764569665
+      ],
+      "fold_times": [
+        26.78561758995056,
+        40.157315254211426,
+        43.791067361831665,
+        27.739449501037598,
+        25.500670194625854
+      ],
+      "mean_auc": 0.7421176260543044,
+      "std_auc": 0.002015841582407083,
+      "mean_fit_time": 32.79482398033142,
+      "total_fit_time": 163.9741199016571
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.7417498471168857,
+        0.740116897055959,
+        0.7447008508116727,
+        0.7441878588300384,
+        0.7398326764569665
+      ],
+      "fold_times": [
+        26.62636113166809,
+        40.571311950683594,
+        44.990182876586914,
+        29.85671329498291,
+        27.79007387161255
+      ],
+      "mean_auc": 0.7421176260543044,
+      "std_auc": 0.002015841582407083,
+      "mean_fit_time": 33.96692862510681,
+      "total_fit_time": 169.83464312553406
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.7437602318903044,
+        0.7411482784393317,
+        0.746481587834338,
+        0.7454835413334727,
+        0.7450158183743747
+      ],
+      "fold_times": [
+        42.64328622817993,
+        36.50673222541809,
+        39.17327690124512,
+        28.460088968276978,
+        53.03646993637085
+      ],
+      "mean_auc": 0.7443778915743643,
+      "std_auc": 0.001836673865088924,
+      "mean_fit_time": 39.963970851898196,
+      "total_fit_time": 199.81985425949097
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.7437602318903044,
+        0.7411482784393317,
+        0.746481587834338,
+        0.7454835413334727,
+        0.7450158183743747
+      ],
+      "fold_times": [
+        41.93894910812378,
+        30.92432475090027,
+        38.13883352279663,
+        26.815446853637695,
+        50.69041657447815
+      ],
+      "mean_auc": 0.7443778915743643,
+      "std_auc": 0.001836673865088924,
+      "mean_fit_time": 37.7015941619873,
+      "total_fit_time": 188.50797080993652
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.7437602318903044,
+        0.7411482784393317,
+        0.746481587834338,
+        0.7454835413334727,
+        0.7450158183743747
+      ],
+      "fold_times": [
+        41.14973592758179,
+        31.57479190826416,
+        38.40219831466675,
+        26.7425320148468,
+        49.33397388458252
+      ],
+      "mean_auc": 0.7443778915743643,
+      "std_auc": 0.001836673865088924,
+      "mean_fit_time": 37.4406464099884,
+      "total_fit_time": 187.20323204994202
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.7429189527166482,
+        0.7409380088824938,
+        0.7448969005354018,
+        0.744256724512679,
+        0.7442171089565974
+      ],
+      "fold_times": [
+        31.90425729751587,
+        30.295462369918823,
+        27.518487453460693,
+        27.895023584365845,
+        51.39851117134094
+      ],
+      "mean_auc": 0.743445539120764,
+      "std_auc": 0.0014088855769268547,
+      "mean_fit_time": 33.802348375320435,
+      "total_fit_time": 169.01174187660217
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.7429189527166482,
+        0.7409380088824938,
+        0.7448969005354018,
+        0.744256724512679,
+        0.7442171089565974
+      ],
+      "fold_times": [
+        33.12959694862366,
+        31.01023554801941,
+        26.8244731426239,
+        27.65751886367798,
+        52.51812767982483
+      ],
+      "mean_auc": 0.743445539120764,
+      "std_auc": 0.0014088855769268547,
+      "mean_fit_time": 34.22799043655395,
+      "total_fit_time": 171.13995218276978
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.7429189527166482,
+        0.7409380088824938,
+        0.7448969005354018,
+        0.744256724512679,
+        0.7442171089565974
+      ],
+      "fold_times": [
+        32.119919300079346,
+        30.548518419265747,
+        28.172770500183105,
+        27.198832511901855,
+        53.333879709243774
+      ],
+      "mean_auc": 0.743445539120764,
+      "std_auc": 0.0014088855769268547,
+      "mean_fit_time": 34.274784088134766,
+      "total_fit_time": 171.37392044067383
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.7429213815420388,
+        0.7402422298200464,
+        0.7443616043215335,
+        0.7414349579727617,
+        0.7418385872131072
+      ],
+      "fold_times": [
+        36.387601375579834,
+        27.299752473831177,
+        34.887805461883545,
+        26.94696044921875,
+        30.933417797088623
+      ],
+      "mean_auc": 0.7421597521738974,
+      "std_auc": 0.001395248918152089,
+      "mean_fit_time": 31.291107511520387,
+      "total_fit_time": 156.45553755760193
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.7429213815420388,
+        0.7402422298200464,
+        0.7443616043215335,
+        0.7414349579727617,
+        0.7418385872131072
+      ],
+      "fold_times": [
+        36.64023494720459,
+        27.37467622756958,
+        35.69526171684265,
+        27.069655895233154,
+        31.092200994491577
+      ],
+      "mean_auc": 0.7421597521738974,
+      "std_auc": 0.001395248918152089,
+      "mean_fit_time": 31.57440595626831,
+      "total_fit_time": 157.87202978134155
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.7429213815420388,
+        0.7402422298200464,
+        0.7443616043215335,
+        0.7414349579727617,
+        0.7418385872131072
+      ],
+      "fold_times": [
+        37.0422568321228,
+        27.516868591308594,
+        35.26038599014282,
+        27.03272581100464,
+        30.695242166519165
+      ],
+      "mean_auc": 0.7421597521738974,
+      "std_auc": 0.001395248918152089,
+      "mean_fit_time": 31.509495878219603,
+      "total_fit_time": 157.54747939109802
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.7446525986024668,
+        0.7432744115652784,
+        0.7473099738106823,
+        0.7460337969301557,
+        0.7435481233903198
+      ],
+      "fold_times": [
+        42.488035678863525,
+        48.19276571273804,
+        88.87206983566284,
+        42.585911989212036,
+        42.271403074264526
+      ],
+      "mean_auc": 0.7449637808597807,
+      "std_auc": 0.001523446410940384,
+      "mean_fit_time": 52.882037258148195,
+      "total_fit_time": 264.41018629074097
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.7446525986024668,
+        0.7432744115652784,
+        0.7473099738106823,
+        0.7460337969301557,
+        0.7435481233903198
+      ],
+      "fold_times": [
+        42.88882088661194,
+        48.02738046646118,
+        89.39690828323364,
+        42.550655126571655,
+        42.27795696258545
+      ],
+      "mean_auc": 0.7449637808597807,
+      "std_auc": 0.001523446410940384,
+      "mean_fit_time": 53.028344345092776,
+      "total_fit_time": 265.14172172546387
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.7446525986024668,
+        0.7432744115652784,
+        0.7473099738106823,
+        0.7460337969301557,
+        0.7435481233903198
+      ],
+      "fold_times": [
+        42.52574443817139,
+        48.528552293777466,
+        89.16317868232727,
+        42.65220355987549,
+        42.38119578361511
+      ],
+      "mean_auc": 0.7449637808597807,
+      "std_auc": 0.001523446410940384,
+      "mean_fit_time": 53.050174951553345,
+      "total_fit_time": 265.2508747577667
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.7439373030957557,
+        0.7429763563185235,
+        0.745981338128049,
+        0.7462360886314374,
+        0.7427923726434587
+      ],
+      "fold_times": [
+        44.29761266708374,
+        40.22352147102356,
+        38.37887763977051,
+        42.314730644226074,
+        42.173529624938965
+      ],
+      "mean_auc": 0.7443846917634449,
+      "std_auc": 0.0014626001163468012,
+      "mean_fit_time": 41.47765440940857,
+      "total_fit_time": 207.38827204704285
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.7439373030957557,
+        0.7429763563185235,
+        0.745981338128049,
+        0.7462360886314374,
+        0.7427923726434587
+      ],
+      "fold_times": [
+        44.46610164642334,
+        40.24253988265991,
+        38.29934048652649,
+        42.18270421028137,
+        42.06342792510986
+      ],
+      "mean_auc": 0.7443846917634449,
+      "std_auc": 0.0014626001163468012,
+      "mean_fit_time": 41.450822830200195,
+      "total_fit_time": 207.25411415100098
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.7439373030957557,
+        0.7429763563185235,
+        0.745981338128049,
+        0.7462360886314374,
+        0.7427923726434587
+      ],
+      "fold_times": [
+        44.22608709335327,
+        40.163575887680054,
+        38.335360527038574,
+        42.36034369468689,
+        41.91374111175537
+      ],
+      "mean_auc": 0.7443846917634449,
+      "std_auc": 0.0014626001163468012,
+      "mean_fit_time": 41.39982166290283,
+      "total_fit_time": 206.99910831451416
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.744137561074949,
+        0.7418775953158551,
+        0.7443517376451518,
+        0.7431491018844549,
+        0.7414731999254272
+      ],
+      "fold_times": [
+        56.2837495803833,
+        59.60913443565369,
+        46.73644280433655,
+        28.236833810806274,
+        39.29469442367554
+      ],
+      "mean_auc": 0.7429978391691675,
+      "std_auc": 0.0011605480282404917,
+      "mean_fit_time": 46.03217101097107,
+      "total_fit_time": 230.16085505485535
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.744137561074949,
+        0.7418775953158551,
+        0.7443517376451518,
+        0.7431491018844549,
+        0.7414731999254272
+      ],
+      "fold_times": [
+        55.83304476737976,
+        59.81343984603882,
+        46.579957246780396,
+        28.160560846328735,
+        39.29155492782593
+      ],
+      "mean_auc": 0.7429978391691675,
+      "std_auc": 0.0011605480282404917,
+      "mean_fit_time": 45.935711526870726,
+      "total_fit_time": 229.67855763435364
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 0), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 0,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.744137561074949,
+        0.7418775953158551,
+        0.7443517376451518,
+        0.7431491018844549,
+        0.7414731999254272
+      ],
+      "fold_times": [
+        55.988980293273926,
+        59.51709008216858,
+        46.54174017906189,
+        28.030167818069458,
+        39.336161851882935
+      ],
+      "mean_auc": 0.7429978391691675,
+      "std_auc": 0.0011605480282404917,
+      "mean_fit_time": 45.882828044891355,
+      "total_fit_time": 229.4141402244568
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.7437376266725488,
+        0.7430438880220699,
+        0.7454418415511357,
+        0.7467172561441004,
+        0.7435363327474916
+      ],
+      "fold_times": [
+        28.49374485015869,
+        21.51834535598755,
+        39.97679686546326,
+        33.139779806137085,
+        26.13985323905945
+      ],
+      "mean_auc": 0.7444953890274693,
+      "std_auc": 0.0013735584273627376,
+      "mean_fit_time": 29.853704023361207,
+      "total_fit_time": 149.26852011680603
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.7437376266725488,
+        0.7430438880220699,
+        0.7454418415511357,
+        0.7467172561441004,
+        0.7435363327474916
+      ],
+      "fold_times": [
+        28.330668687820435,
+        21.425541877746582,
+        39.92314863204956,
+        32.98545455932617,
+        26.10184359550476
+      ],
+      "mean_auc": 0.7444953890274693,
+      "std_auc": 0.0013735584273627376,
+      "mean_fit_time": 29.753331470489503,
+      "total_fit_time": 148.7666573524475
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.7437376266725488,
+        0.7430438880220699,
+        0.7454418415511357,
+        0.7467172561441004,
+        0.7435363327474916
+      ],
+      "fold_times": [
+        28.26612424850464,
+        21.437912225723267,
+        40.07211351394653,
+        33.294352293014526,
+        29.171640634536743
+      ],
+      "mean_auc": 0.7444953890274693,
+      "std_auc": 0.0013735584273627376,
+      "mean_fit_time": 30.44842858314514,
+      "total_fit_time": 152.2421429157257
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.7444017842711592,
+        0.7428100877948575,
+        0.7458803583534367,
+        0.7460221703393817,
+        0.7411411524490025
+      ],
+      "fold_times": [
+        30.553053379058838,
+        29.658381700515747,
+        31.885382413864136,
+        30.734162092208862,
+        26.179058074951172
+      ],
+      "mean_auc": 0.7440511106415675,
+      "std_auc": 0.0018634478745996413,
+      "mean_fit_time": 29.802007532119752,
+      "total_fit_time": 149.01003766059875
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.7444017842711592,
+        0.7428100877948575,
+        0.7458803583534367,
+        0.7460221703393817,
+        0.7411411524490025
+      ],
+      "fold_times": [
+        26.912628412246704,
+        29.589635848999023,
+        31.890283584594727,
+        30.65180802345276,
+        26.086571216583252
+      ],
+      "mean_auc": 0.7440511106415675,
+      "std_auc": 0.0018634478745996413,
+      "mean_fit_time": 29.02618541717529,
+      "total_fit_time": 145.13092708587646
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.7444017842711592,
+        0.7428100877948575,
+        0.7458803583534367,
+        0.7460221703393817,
+        0.7411411524490025
+      ],
+      "fold_times": [
+        26.91884183883667,
+        29.57605290412903,
+        31.91231894493103,
+        31.516173839569092,
+        26.3652286529541
+      ],
+      "mean_auc": 0.7440511106415675,
+      "std_auc": 0.0018634478745996413,
+      "mean_fit_time": 29.257723236083983,
+      "total_fit_time": 146.28861618041992
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.7429258083022223,
+        0.7369865690031587,
+        0.744952882171702,
+        0.7446061937852003,
+        0.7425746706902951
+      ],
+      "fold_times": [
+        32.708210468292236,
+        21.26720094680786,
+        23.596086263656616,
+        28.05678391456604,
+        25.969406366348267
+      ],
+      "mean_auc": 0.7424092247905156,
+      "std_auc": 0.0028634347310510133,
+      "mean_fit_time": 26.319537591934203,
+      "total_fit_time": 131.59768795967102
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.7429258083022223,
+        0.7369865690031587,
+        0.744952882171702,
+        0.7446061937852003,
+        0.7425746706902951
+      ],
+      "fold_times": [
+        32.667505502700806,
+        21.673062562942505,
+        23.467814922332764,
+        28.78977346420288,
+        25.797123670578003
+      ],
+      "mean_auc": 0.7424092247905156,
+      "std_auc": 0.0028634347310510133,
+      "mean_fit_time": 26.47905602455139,
+      "total_fit_time": 132.39528012275696
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (50,)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          50
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.7429258083022223,
+        0.7369865690031587,
+        0.744952882171702,
+        0.7446061937852003,
+        0.7425746706902951
+      ],
+      "fold_times": [
+        32.77552795410156,
+        21.040177822113037,
+        23.5659441947937,
+        27.86490797996521,
+        26.386157035827637
+      ],
+      "mean_auc": 0.7424092247905156,
+      "std_auc": 0.0028634347310510133,
+      "mean_fit_time": 26.326542997360228,
+      "total_fit_time": 131.63271498680115
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.7458849486374444,
+        0.7420630249475789,
+        0.7463213168395635,
+        0.7461163231830122,
+        0.7451784882235231
+      ],
+      "fold_times": [
+        32.77534031867981,
+        31.017908096313477,
+        47.21441841125488,
+        28.94672465324402,
+        32.39088439941406
+      ],
+      "mean_auc": 0.7451128203662244,
+      "std_auc": 0.0015728463408524326,
+      "mean_fit_time": 34.46905517578125,
+      "total_fit_time": 172.34527587890625
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.7458849486374444,
+        0.7420630249475789,
+        0.7463213168395635,
+        0.7461163231830122,
+        0.7451784882235231
+      ],
+      "fold_times": [
+        33.078606843948364,
+        32.2372031211853,
+        48.20588278770447,
+        29.079814195632935,
+        32.424803495407104
+      ],
+      "mean_auc": 0.7451128203662244,
+      "std_auc": 0.0015728463408524326,
+      "mean_fit_time": 35.00526208877564,
+      "total_fit_time": 175.02631044387817
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.7458849486374444,
+        0.7420630249475789,
+        0.7463213168395635,
+        0.7461163231830122,
+        0.7451784882235231
+      ],
+      "fold_times": [
+        33.388102769851685,
+        31.293057680130005,
+        48.116153955459595,
+        28.421000719070435,
+        31.631053924560547
+      ],
+      "mean_auc": 0.7451128203662244,
+      "std_auc": 0.0015728463408524326,
+      "mean_fit_time": 34.56987380981445,
+      "total_fit_time": 172.84936904907227
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.7436369589588567,
+        0.7423017175876867,
+        0.7445714355387495,
+        0.7455375586203481,
+        0.7439178772116224
+      ],
+      "fold_times": [
+        33.09601354598999,
+        31.47090172767639,
+        27.038711071014404,
+        33.07315468788147,
+        31.720945119857788
+      ],
+      "mean_auc": 0.7439931095834525,
+      "std_auc": 0.0010689334683365145,
+      "mean_fit_time": 31.27994523048401,
+      "total_fit_time": 156.39972615242004
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.7436369589588567,
+        0.7423017175876867,
+        0.7445714355387495,
+        0.7455375586203481,
+        0.7439178772116224
+      ],
+      "fold_times": [
+        33.76932406425476,
+        30.995264768600464,
+        27.29232668876648,
+        32.732022523880005,
+        31.384666442871094
+      ],
+      "mean_auc": 0.7439931095834525,
+      "std_auc": 0.0010689334683365145,
+      "mean_fit_time": 31.23472089767456,
+      "total_fit_time": 156.1736044883728
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.7436369589588567,
+        0.7423017175876867,
+        0.7445714355387495,
+        0.7455375586203481,
+        0.7439178772116224
+      ],
+      "fold_times": [
+        32.61081290245056,
+        31.29662036895752,
+        27.433472394943237,
+        33.287753105163574,
+        31.507014751434326
+      ],
+      "mean_auc": 0.7439931095834525,
+      "std_auc": 0.0010689334683365145,
+      "mean_fit_time": 31.227134704589844,
+      "total_fit_time": 156.13567352294922
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.7451619538544525,
+        0.7416987474293751,
+        0.7450372220670226,
+        0.7450006690095978,
+        0.7436411126171638
+      ],
+      "fold_times": [
+        32.555129289627075,
+        30.885265588760376,
+        26.6417133808136,
+        30.754520654678345,
+        30.92067551612854
+      ],
+      "mean_auc": 0.7441079409955224,
+      "std_auc": 0.001326168322480966,
+      "mean_fit_time": 30.351460886001586,
+      "total_fit_time": 151.75730443000793
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.7451619538544525,
+        0.7416987474293751,
+        0.7450372220670226,
+        0.7450006690095978,
+        0.7436411126171638
+      ],
+      "fold_times": [
+        31.939815044403076,
+        30.71375036239624,
+        26.885467052459717,
+        30.705299139022827,
+        30.789978504180908
+      ],
+      "mean_auc": 0.7441079409955224,
+      "std_auc": 0.001326168322480966,
+      "mean_fit_time": 30.206862020492554,
+      "total_fit_time": 151.03431010246277
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (100,)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.7451619538544525,
+        0.7416987474293751,
+        0.7450372220670226,
+        0.7450006690095978,
+        0.7436411126171638
+      ],
+      "fold_times": [
+        30.96015167236328,
+        29.544553518295288,
+        25.63998031616211,
+        29.276654481887817,
+        29.189135313034058
+      ],
+      "mean_auc": 0.7441079409955224,
+      "std_auc": 0.001326168322480966,
+      "mean_fit_time": 28.92209506034851,
+      "total_fit_time": 144.61047530174255
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.7460140775663174,
+        0.7437996400677815,
+        0.747186559081732,
+        0.7458328633138525,
+        0.7457615523688362
+      ],
+      "fold_times": [
+        42.029078245162964,
+        38.30187702178955,
+        49.16978740692139,
+        40.27084136009216,
+        54.529189109802246
+      ],
+      "mean_auc": 0.745718938479704,
+      "std_auc": 0.0010899099519992418,
+      "mean_fit_time": 44.86015462875366,
+      "total_fit_time": 224.3007731437683
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.7460140775663174,
+        0.7437996400677815,
+        0.747186559081732,
+        0.7458328633138525,
+        0.7457615523688362
+      ],
+      "fold_times": [
+        41.98121404647827,
+        38.23000931739807,
+        49.302457332611084,
+        40.19024181365967,
+        55.14238953590393
+      ],
+      "mean_auc": 0.745718938479704,
+      "std_auc": 0.0010899099519992418,
+      "mean_fit_time": 44.9692624092102,
+      "total_fit_time": 224.84631204605103
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.0001), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.0001,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.7460140775663174,
+        0.7437996400677815,
+        0.747186559081732,
+        0.7458328633138525,
+        0.7457615523688362
+      ],
+      "fold_times": [
+        42.18397235870361,
+        38.54116344451904,
+        49.533228158950806,
+        40.35148501396179,
+        55.11853218078613
+      ],
+      "mean_auc": 0.745718938479704,
+      "std_auc": 0.0010899099519992418,
+      "mean_fit_time": 45.14567623138428,
+      "total_fit_time": 225.7283811569214
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.7469094220260348,
+        0.7431022463405887,
+        0.7470412407621935,
+        0.7470946611758577,
+        0.7445410571387672
+      ],
+      "fold_times": [
+        45.83907103538513,
+        56.30505132675171,
+        49.33875274658203,
+        52.92090439796448,
+        42.01632523536682
+      ],
+      "mean_auc": 0.7457377254886884,
+      "std_auc": 0.0016304026976655423,
+      "mean_fit_time": 49.28402094841003,
+      "total_fit_time": 246.42010474205017
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.7469094220260348,
+        0.7431022463405887,
+        0.7470412407621935,
+        0.7470946611758577,
+        0.7445410571387672
+      ],
+      "fold_times": [
+        46.055187463760376,
+        56.493669509887695,
+        49.349013566970825,
+        52.605732679367065,
+        41.907039642333984
+      ],
+      "mean_auc": 0.7457377254886884,
+      "std_auc": 0.0016304026976655423,
+      "mean_fit_time": 49.28212857246399,
+      "total_fit_time": 246.41064286231995
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.001), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.001,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.7469094220260348,
+        0.7431022463405887,
+        0.7470412407621935,
+        0.7470946611758577,
+        0.7445410571387672
+      ],
+      "fold_times": [
+        46.04021620750427,
+        56.508973360061646,
+        49.348222494125366,
+        52.84882688522339,
+        42.15935969352722
+      ],
+      "mean_auc": 0.7457377254886884,
+      "std_auc": 0.0016304026976655423,
+      "mean_fit_time": 49.38111972808838,
+      "total_fit_time": 246.9055986404419
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 100)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 100
+      },
+      "fold_scores": [
+        0.7456801704305456,
+        0.7429299525315471,
+        0.7477162124821626,
+        0.7440186705277002,
+        0.7437709611482248
+      ],
+      "fold_times": [
+        53.231356620788574,
+        62.01203441619873,
+        56.891282081604004,
+        32.17408800125122,
+        40.939502477645874
+      ],
+      "mean_auc": 0.7448231934240361,
+      "std_auc": 0.0016995752287173988,
+      "mean_fit_time": 49.04965271949768,
+      "total_fit_time": 245.2482635974884
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 200)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 200
+      },
+      "fold_scores": [
+        0.7456801704305456,
+        0.7429299525315471,
+        0.7477162124821626,
+        0.7440186705277002,
+        0.7437709611482248
+      ],
+      "fold_times": [
+        53.140836238861084,
+        61.8548858165741,
+        56.51317834854126,
+        32.260220766067505,
+        41.13437509536743
+      ],
+      "mean_auc": 0.7448231934240361,
+      "std_auc": 0.0016995752287173988,
+      "mean_fit_time": 48.98069925308228,
+      "total_fit_time": 244.90349626541138
+    },
+    {
+      "signature": "[('avazupreprocessor__smoothing', 10), ('mlpclassifier__alpha', 0.01), ('mlpclassifier__hidden_layer_sizes', (100, 50)), ('mlpclassifier__max_iter', 500)]",
+      "params": {
+        "avazupreprocessor__smoothing": 10,
+        "mlpclassifier__hidden_layer_sizes": [
+          100,
+          50
+        ],
+        "mlpclassifier__alpha": 0.01,
+        "mlpclassifier__max_iter": 500
+      },
+      "fold_scores": [
+        0.7456801704305456,
+        0.7429299525315471,
+        0.7477162124821626,
+        0.7440186705277002,
+        0.7437709611482248
+      ],
+      "fold_times": [
+        53.02622675895691,
+        62.0666344165802,
+        56.814966440200806,
+        32.35847187042236,
+        40.590861797332764
+      ],
+      "mean_auc": 0.7448231934240361,
+      "std_auc": 0.0016995752287173988,
+      "mean_fit_time": 48.971432256698606,
+      "total_fit_time": 244.85716128349304
+    }
+  ]
+}
