@@ -2,12 +2,17 @@
 evaluation_toolkit
 ==================
 
-Statistical evaluation of binary classifiers on a shared test set.
+Statistical evaluation of binary classifiers on a shared test set,
+inference utilities for DuckDB-backed test relations, and local
+explanations for misclassified cases.
 
 Provides the DeLong test for comparing two correlated ROC curves, a
-side-by-side ROC plot, a Youden-index based threshold optimizer, and a
-classification-metrics comparison table, together with APA 7-formatted
-summary tables and a shared figure renderer.
+side-by-side ROC plot, a Youden-index based threshold optimizer, a
+Youden comparison table across multiple models, a classification
+metrics comparison table, a persistence helper for predictions, a LIME
+explainer builder, and an influence plot for local explanations,
+together with APA 7-formatted summary tables and a shared figure
+renderer.
 
 The variance of each AUC and the covariance between two AUCs are
 computed in O(N log N) using the U-statistic formulation of the DeLong
@@ -23,14 +28,23 @@ Model Comparison
     delong_roc_table
     metrics_comparison_table
     plot_roc_curves
+    youden_comparison_table
     youden_optimal_threshold
+
+Inference
+    predict_and_save
+
+Local Explanations
+    build_lime_explainer
+    plot_lime_influence
 
 Rendering
     render_figure
 
 Dependencies
 ------------
-numpy, pandas, scipy, scikit-learn, matplotlib, IPython
+duckdb, joblib, lime, numpy, pandas, scipy, scikit-learn, matplotlib,
+IPython
 """
 
 from __future__ import annotations
@@ -38,8 +52,12 @@ from __future__ import annotations
 import base64
 import io
 import logging
+import time
 from pathlib import Path
 
+import joblib
+import lime
+import lime.lime_tabular
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -48,7 +66,7 @@ from pandas.io.formats.style_render import CSSDict
 from scipy.stats import norm
 from sklearn.metrics import auc, roc_curve
 
-__version__ = "1.2.0"
+__version__ = "1.4.0"
 
 __author__ = (
     "Juan Camilo Mendoza Arango <cjarango@uninorte.edu.co>, "
@@ -90,10 +108,14 @@ _DEFAULT_METRIC_TITLES = {
 }
 
 __all__ = [
+    "build_lime_explainer",
     "delong_roc_table",
     "metrics_comparison_table",
+    "plot_lime_influence",
     "plot_roc_curves",
+    "predict_and_save",
     "render_figure",
+    "youden_comparison_table",
     "youden_optimal_threshold",
 ]
 
@@ -113,6 +135,7 @@ def delong_roc_table(
     time_decimals=2,
     decimals_auc=3,
     decimals_p=3,
+    column_titles=None,
     render=True,
 ):
     """Compare two ROC curves with the DeLong test.
@@ -125,7 +148,8 @@ def delong_roc_table(
     two, and the associated p-value, all formatted in APA 7 style. When
     the optional time tuples are provided, the table is extended with
     their corresponding columns. When both tuples are ``None``, only the
-    comparison columns are shown.
+    comparison columns are shown. Column headers can be renamed through
+    a translation dictionary.
 
     Args:
         y_true (array-like): Binary ground-truth labels.
@@ -154,6 +178,12 @@ def delong_roc_table(
             AUC difference. Defaults to 3.
         decimals_p (int): Number of decimals used for the p-value.
             Defaults to 3.
+        column_titles (dict or None): Mapping from the default header to
+            a replacement label. Keys are matched against the default
+            headers ``"Model"``, ``"Training Time"``,
+            ``"Prediction Time"``, ``"AUC"``, ``"ΔAUC"`` and ``"p"``.
+            Unmapped columns keep their default name. When ``None``, all
+            headers remain in their default form. Defaults to ``None``.
         render (bool): If ``True``, the styled table is rendered as
             centered HTML. Defaults to ``True``.
 
@@ -167,10 +197,11 @@ def delong_roc_table(
 
     Raises:
         TypeError: If ``model_names`` is not a length-2 tuple or list of
-            strings, if ``render`` or ``times_in_minutes`` is not a
-            boolean, if ``training_times`` or ``prediction_times`` is
-            not ``None`` nor a length-2 tuple/list of numbers, or if any
-            input array cannot be cast to a numeric array.
+            strings, if ``column_titles`` is not a dict or ``None``, if
+            ``render`` or ``times_in_minutes`` is not a boolean, if
+            ``training_times`` or ``prediction_times`` is not ``None``
+            nor a length-2 tuple/list of numbers, or if any input array
+            cannot be cast to a numeric array.
         ValueError: If the two prediction vectors have different
             lengths, if they do not match the length of ``y_true``, if
             any time value is negative, or if any decimal argument is
@@ -184,6 +215,9 @@ def delong_roc_table(
     _validate_non_negative_int(decimals_p, "decimals_p")
     _validate_optional_time_pair(training_times, "training_times")
     _validate_optional_time_pair(prediction_times, "prediction_times")
+
+    if column_titles is not None and not isinstance(column_titles, dict):
+        raise TypeError("'column_titles' must be a dict or None.")
 
     y_true = np.asarray(y_true)
     y_pred1 = np.asarray(y_pred1)
@@ -251,6 +285,9 @@ def delong_roc_table(
         rows.append(row)
 
     df_display = pd.DataFrame(rows)
+
+    if column_titles is not None:
+        df_display = df_display.rename(columns=column_titles)
 
     styled = (
         df_display.style
@@ -503,10 +540,7 @@ def youden_optimal_threshold(
     y_true,
     y_score,
     model_name="Model",
-    threshold_col="Threshold",
-    sensitivity_col="Sensitivity",
-    specificity_col="Specificity",
-    youden_col="Youden Index",
+    column_titles=None,
     decimals=4,
     render=True,
 ):
@@ -523,14 +557,11 @@ def youden_optimal_threshold(
         y_score (array-like): Positive-class scores.
         model_name (str): Display name shown in the first column of the
             output table. Defaults to ``"Model"``.
-        threshold_col (str): Header for the threshold column. Defaults to
-            ``"Threshold"``.
-        sensitivity_col (str): Header for the sensitivity column.
-            Defaults to ``"Sensitivity"``.
-        specificity_col (str): Header for the specificity column.
-            Defaults to ``"Specificity"``.
-        youden_col (str): Header for the Youden index column. Defaults to
-            ``"Youden Index"``.
+        column_titles (dict or None): Mapping from default header to a
+            replacement label. Keys are matched against ``"Model"``,
+            ``"Threshold"``, ``"Sensitivity"``, ``"Specificity"`` and
+            ``"Youden Index"``. Unmapped columns keep their default
+            header. Defaults to ``None``.
         decimals (int): Number of decimals used for all formatted values.
             Defaults to 4.
         render (bool): If ``True``, the styled table is rendered as
@@ -542,62 +573,42 @@ def youden_optimal_threshold(
         and ``n_neg``.
 
     Raises:
-        TypeError: If ``model_name`` or any of the column headers is not
-            a string, or if ``render`` is not a boolean.
+        TypeError: If ``model_name`` is not a string, if
+            ``column_titles`` is not a dict or ``None``, or if
+            ``render`` is not a boolean.
         ValueError: If ``decimals`` is negative, if the two arrays have
             different lengths, or if either class is absent from
             ``y_true``.
     """
     _validate_string(model_name, "model_name")
-    _validate_string(threshold_col, "threshold_col")
-    _validate_string(sensitivity_col, "sensitivity_col")
-    _validate_string(specificity_col, "specificity_col")
-    _validate_string(youden_col, "youden_col")
     _validate_bool(render, "render")
     _validate_non_negative_int(decimals, "decimals")
 
-    y_true = np.asarray(y_true)
-    y_score = np.asarray(y_score, dtype=float)
+    if column_titles is not None and not isinstance(column_titles, dict):
+        raise TypeError("'column_titles' must be a dict or None.")
 
-    if y_true.shape != y_score.shape:
-        raise ValueError(
-            "'y_true' and 'y_score' must have the same length."
-        )
-
-    n_pos = int((y_true == 1).sum())
-    n_neg = int((y_true == 0).sum())
-
-    if n_pos == 0 or n_neg == 0:
-        raise ValueError(
-            "'y_true' must contain both classes to compute the Youden index."
-        )
-
-    fpr, tpr, thresholds = roc_curve(y_true, y_score)
-    youden = tpr - fpr
-    best_idx = int(np.argmax(youden))
-
-    best_threshold = float(thresholds[best_idx])
-    best_sensitivity = float(tpr[best_idx])
-    best_specificity = float(1.0 - fpr[best_idx])
-    best_youden = float(youden[best_idx])
+    scores = _youden_scores(y_true, y_score)
 
     row = {
         "Model": model_name,
-        threshold_col: _format_apa7_no_zero(
-            best_threshold, decimals=decimals
+        "Threshold": _format_apa7_no_zero(
+            scores["threshold"], decimals=decimals
         ),
-        sensitivity_col: _format_apa7_no_zero(
-            best_sensitivity, decimals=decimals
+        "Sensitivity": _format_apa7_no_zero(
+            scores["sensitivity"], decimals=decimals
         ),
-        specificity_col: _format_apa7_no_zero(
-            best_specificity, decimals=decimals
+        "Specificity": _format_apa7_no_zero(
+            scores["specificity"], decimals=decimals
         ),
-        youden_col: _format_apa7_no_zero(
-            best_youden, decimals=decimals
+        "Youden Index": _format_apa7_no_zero(
+            scores["youden_index"], decimals=decimals
         ),
     }
 
     df_display = pd.DataFrame([row])
+
+    if column_titles is not None:
+        df_display = df_display.rename(columns=column_titles)
 
     styled = (
         df_display.style
@@ -610,13 +621,125 @@ def youden_optimal_threshold(
 
     return {
         "model": model_name,
-        "threshold": best_threshold,
-        "sensitivity": best_sensitivity,
-        "specificity": best_specificity,
-        "youden_index": best_youden,
-        "n_pos": n_pos,
-        "n_neg": n_neg,
+        "threshold": scores["threshold"],
+        "sensitivity": scores["sensitivity"],
+        "specificity": scores["specificity"],
+        "youden_index": scores["youden_index"],
+        "n_pos": scores["n_pos"],
+        "n_neg": scores["n_neg"],
     }
+
+
+def youden_comparison_table(
+    sources,
+    model_names=None,
+    target_col="click",
+    prediction_col="prediction",
+    column_titles=None,
+    decimals=4,
+    render=True,
+):
+    """Build a comparison table of Youden thresholds across models.
+
+    Computes the Youden optimal threshold for each prediction source and
+    stacks the results into a table where each row corresponds to one
+    model. The columns report the threshold, the sensitivity, the
+    specificity and the Youden index at that threshold. The output is
+    rendered with the same visual language as the other tables in the
+    toolkit.
+
+    Args:
+        sources (list or tuple): Prediction sources, one per model. Each
+            element is either a path to a Parquet file or a pandas
+            DataFrame with the target and prediction columns.
+        model_names (list or tuple of str or None): Display names for the
+            models, in the same order as ``sources``. When ``None``,
+            generic names ``("Model 1", "Model 2", ...)`` are used.
+            Defaults to ``None``.
+        target_col (str): Name of the column with the binary ground-truth
+            labels. Defaults to ``"click"``.
+        prediction_col (str): Name of the column with the positive-class
+            scores. Defaults to ``"prediction"``.
+        column_titles (dict or None): Mapping from default header to a
+            replacement label. Keys are matched against ``"Model"``,
+            ``"Threshold"``, ``"Sensitivity"``, ``"Specificity"`` and
+            ``"Youden Index"``. Unmapped columns keep their default
+            header. Defaults to ``None``.
+        decimals (int): Number of decimals used for every formatted value.
+            Defaults to 4.
+        render (bool): If ``True``, the styled table is rendered as
+            centered HTML. Defaults to ``True``.
+
+    Returns:
+        pandas.DataFrame: The formatted comparison table with one row per
+        model and the columns ``Model``, ``Threshold``, ``Sensitivity``,
+        ``Specificity`` and ``Youden Index``.
+
+    Raises:
+        TypeError: If ``sources`` or ``model_names`` is not a list or
+            tuple, if ``column_titles`` is not a dict or ``None``, if
+            ``render`` is not a boolean, or if any element of
+            ``model_names`` is not a string.
+        ValueError: If ``model_names`` does not match the number of
+            sources, if ``decimals`` is negative, or if any source lacks
+            both classes in its target vector.
+    """
+    _validate_sequence(sources, "sources")
+    _validate_bool(render, "render")
+    _validate_non_negative_int(decimals, "decimals")
+
+    if model_names is None:
+        model_names = [f"Model {i + 1}" for i in range(len(sources))]
+    else:
+        _validate_sequence(model_names, "model_names")
+        if len(model_names) != len(sources):
+            raise ValueError(
+                "'model_names' must have one name per source."
+            )
+        if not all(isinstance(n, str) for n in model_names):
+            raise TypeError("All elements of 'model_names' must be strings.")
+
+    if column_titles is not None and not isinstance(column_titles, dict):
+        raise TypeError("'column_titles' must be a dict or None.")
+
+    rows = []
+    for name, source in zip(model_names, sources):
+        y_true, y_score = _resolve_predictions(
+            source, target_col, prediction_col
+        )
+        scores = _youden_scores(y_true, y_score)
+
+        rows.append({
+            "Model": name,
+            "Threshold": _format_apa7_no_zero(
+                scores["threshold"], decimals=decimals
+            ),
+            "Sensitivity": _format_apa7_no_zero(
+                scores["sensitivity"], decimals=decimals
+            ),
+            "Specificity": _format_apa7_no_zero(
+                scores["specificity"], decimals=decimals
+            ),
+            "Youden Index": _format_apa7_no_zero(
+                scores["youden_index"], decimals=decimals
+            ),
+        })
+
+    df_display = pd.DataFrame(rows)
+
+    if column_titles is not None:
+        df_display = df_display.rename(columns=column_titles)
+
+    styled = (
+        df_display.style
+        .hide(axis="index")
+        .set_table_styles(_table_style_rules(left_align_positions=(1,)))
+    )
+
+    if render:
+        _render_styled(styled)
+
+    return df_display
 
 
 def metrics_comparison_table(
@@ -746,6 +869,500 @@ def metrics_comparison_table(
         _render_styled(styled)
 
     return df_display
+
+
+def predict_and_save(
+    con,
+    model_path,
+    relation="test",
+    target="click",
+    output_dir=None,
+    n_rows=200_000,
+    threshold=0.5,
+    extract=True,
+    seed=42,
+):
+    """Run a serialized model over a DuckDB relation and persist predictions.
+
+    Loads the pipeline, draws a reproducible sample from ``relation``,
+    computes the positive-class probability for each row, measures the
+    inference time, and writes the true label and the predicted
+    probability to a Parquet file. The output file is always named after
+    the model with the suffix ``_predictions.parquet``. When
+    ``extract=True``, one false positive and one false negative are
+    returned in memory along with their raw feature values, so they can
+    be fed directly to an explainer.
+
+    Args:
+        con (duckdb.DuckDBPyConnection): Active DuckDB connection.
+        model_path (str or pathlib.Path): Path to the serialized
+            pipeline in joblib format.
+        relation (str): Name of the DuckDB view or table with the test
+            data. Defaults to ``"test"``.
+        target (str): Name of the binary target column. Defaults to
+            ``"click"``.
+        output_dir (str, pathlib.Path, or None): Directory where the
+            Parquet file is written. The file is named after the model
+            stem with the suffix ``_predictions.parquet``. When
+            ``None``, the file is written next to the model. Defaults to
+            ``None``.
+        n_rows (int): Number of rows to draw from ``relation`` for the
+            prediction set. When the value exceeds the total number of
+            rows in the view, all rows are returned. Defaults to
+            200,000.
+        threshold (float): Decision threshold used to classify a row as
+            a positive prediction. Defaults to 0.5.
+        extract (bool): If ``True``, one false positive and one false
+            negative are located and returned in memory. If ``False``,
+            the extraction step is skipped and ``failing_cases`` is
+            ``None``. Defaults to ``True``.
+        seed (int): Seed for the reservoir sampler and for the failing
+            case selection. Defaults to 42.
+
+    Returns:
+        dict: Dictionary with keys ``prediction_time`` (seconds),
+        ``output_path`` (pathlib.Path), ``failing_cases``
+        (pandas.DataFrame with two rows and the raw features, or
+        ``None`` when ``extract=False``), ``n_failures``, ``n_fp`` and
+        ``n_fn``.
+
+    Raises:
+        FileNotFoundError: If ``model_path`` does not exist.
+        TypeError: If ``extract`` is not a boolean.
+        ValueError: If ``n_rows`` is not a positive integer, if
+            ``threshold`` is not in ``(0, 1)``, or if the sample is
+            empty.
+    """
+
+    model_path = Path(model_path)
+    if not model_path.exists():
+        raise FileNotFoundError(f"Model not found: {model_path}")
+
+    _validate_positive_int(n_rows, "n_rows")
+    _validate_bool(extract, "extract")
+
+    if not isinstance(threshold, (int, float)) or isinstance(threshold, bool) \
+            or not (0 < threshold < 1):
+        raise ValueError("'threshold' must be a number in (0, 1).")
+
+    model = joblib.load(model_path)
+
+    df = con.sql(f"""
+        SELECT * FROM {relation}
+        USING SAMPLE {n_rows} ROWS (reservoir, {seed})
+    """).df()
+
+    if df.empty:
+        raise ValueError(f"The sample from '{relation}' returned no rows.")
+
+    X = df.drop(columns=[target])
+    y = df[target].astype("int8").to_numpy()
+
+    start = time.perf_counter()
+    proba = model.predict_proba(X)[:, 1]
+    prediction_time = time.perf_counter() - start
+
+    target_dir = Path(output_dir) if output_dir is not None else model_path.parent
+    target_dir.mkdir(parents=True, exist_ok=True)
+    output_path = target_dir / f"{model_path.stem}_predictions.parquet"
+
+    pd.DataFrame({
+        target: y,
+        "prediction": proba.astype("float32"),
+    }).to_parquet(output_path, index=False)
+
+    y_pred = (proba >= threshold).astype("int8")
+
+    n_failures = int((y != y_pred).sum())
+    n_fp = int(((y_pred == 1) & (y == 0)).sum())
+    n_fn = int(((y_pred == 0) & (y == 1)).sum())
+
+    failing_cases = None
+    if extract:
+        df_full = df.copy()
+        df_full["_pred"] = y_pred
+
+        fp_pool = df_full[(df_full["_pred"] == 1) & (df_full[target] == 0)]
+        fn_pool = df_full[(df_full["_pred"] == 0) & (df_full[target] == 1)]
+
+        picks = []
+        if not fp_pool.empty:
+            picks.append(fp_pool.sample(1, random_state=seed))
+        if not fn_pool.empty:
+            picks.append(fn_pool.sample(1, random_state=seed + 1))
+
+        if picks:
+            failing_cases = pd.concat(picks, ignore_index=True)
+        else:
+            failing_cases = pd.DataFrame(columns=df_full.columns)
+
+    return {
+        "prediction_time": prediction_time,
+        "output_path": output_path,
+        "failing_cases": failing_cases,
+        "n_failures": n_failures,
+        "n_fp": n_fp,
+        "n_fn": n_fn,
+    }
+
+
+def build_lime_explainer(
+    df_features,
+    categorical_cols,
+    numeric_cols,
+    random_state=42,
+):
+    """Build a LIME explainer for a mixed categorical/numeric feature set.
+
+    Categorical columns are encoded as integer codes before being handed
+    to LIME, and the original category values are stored so that any
+    perturbed array can be decoded back to the DataFrame format the
+    pipeline expects. Numeric columns are preserved as floats with no
+    intermediate string conversion.
+
+    Args:
+        df_features (pandas.DataFrame): Reference sample of raw feature
+            values.
+        categorical_cols (list of str): Names of the categorical columns.
+        numeric_cols (list of str): Names of the numeric columns.
+        random_state (int): Seed for the LIME sampler. Defaults to 42.
+
+    Returns:
+        tuple: ``(explainer, decode, columns, encoders)`` where
+        ``explainer`` is the fitted ``LimeTabularExplainer``, ``decode``
+        is a function mapping a numpy array back to a DataFrame with the
+        original column names and dtypes, ``columns`` is the feature name
+        list, and ``encoders`` is a mapping from column name to the
+        ordered list of observed categories.
+
+    Raises:
+        KeyError: If any name in ``categorical_cols`` or ``numeric_cols``
+            is not a column of ``df_features``.
+    """
+
+    columns = list(df_features.columns)
+
+    missing = [
+        c for c in (categorical_cols + numeric_cols) if c not in columns
+    ]
+    if missing:
+        raise KeyError(f"Columns not found in 'df_features': {missing}")
+
+    original_dtypes = {col: df_features[col].dtype for col in columns}
+
+    encoders = {}
+    X_encoded = df_features.copy()
+
+    for col in categorical_cols:
+        cat = X_encoded[col].astype("category")
+        encoders[col] = list(cat.cat.categories)
+        X_encoded[col] = cat.cat.codes.astype(float)
+
+    X_array = np.empty(X_encoded.shape, dtype=float)
+    for i, col in enumerate(X_encoded.columns):
+        X_array[:, i] = pd.to_numeric(
+            X_encoded[col], errors="raise"
+        ).to_numpy(dtype=float)
+
+    cat_indices = [i for i, c in enumerate(columns) if c in encoders]
+    cat_names = {i: encoders[columns[i]] for i in cat_indices}
+
+    def decode(arr):
+        """Map an encoded array back to a DataFrame matching the input.
+
+        Categorical columns are restored to their original values and
+        dtypes. Numeric columns keep their float values without any
+        string conversion.
+
+        Args:
+            arr (numpy.ndarray): Array of shape ``(n, len(columns))``.
+
+        Returns:
+            pandas.DataFrame: DataFrame with the original column names
+            and dtypes.
+        """
+        df = pd.DataFrame(arr, columns=columns)
+
+        for col, cats in encoders.items():
+            codes = df[col].round().astype(int).clip(0, len(cats) - 1)
+            df[col] = pd.Series([cats[c] for c in codes], index=df.index)
+            try:
+                df[col] = df[col].astype(original_dtypes[col])
+            except (ValueError, TypeError):
+                pass
+
+        for col in numeric_cols:
+            try:
+                df[col] = df[col].astype(original_dtypes[col])
+            except (ValueError, TypeError):
+                pass
+
+        return df[columns]
+
+    explainer = lime.lime_tabular.LimeTabularExplainer(
+        training_data=X_array,
+        feature_names=columns,
+        categorical_features=cat_indices,
+        categorical_names=cat_names,
+        mode="classification",
+        discretize_continuous=True,
+        random_state=random_state,
+    )
+
+    return explainer, decode, columns, encoders
+
+
+def plot_lime_influence(
+    explanation,
+    label=1,
+    title=None,
+    xlabel="Contribution to prediction",
+    ylabel=None,
+    positive_color="#1a3d6b",
+    negative_color="#a32e2e",
+    positive_label="For",
+    negative_label="Against",
+    bar_height=0.7,
+    bar_edge_color="black",
+    bar_edge_width=0.8,
+    show_values=True,
+    value_size=9,
+    value_format="{:+.3f}",
+    value_offset_ratio=0.02,
+    show_legend=True,
+    legend_loc="lower right",
+    legend_frame=False,
+    legend_fontsize=None,
+    label_size=11,
+    title_size=12,
+    tick_size=10,
+    title_loc="center",
+    pads=(9, 9, 12),
+    show_grid=False,
+    xlim_padding=0.20,
+    figsize=(8, 5),
+    render=True,
+    fmt="svg",
+    dpi=100,
+):
+    """Plot the per-feature contributions of a LIME explanation.
+
+    Draws a horizontal bar chart of the weights returned by
+    ``explanation.as_list(label)``. Positive weights push the prediction
+    toward the target class and are drawn in one color; negative weights
+    push the prediction away and are drawn in another. The bars are
+    sorted by absolute weight, with the most influential feature at the
+    top of the panel. The visual language matches the rest of the
+    toolkit: thin black edges, no gridlines by default, vector output.
+
+    Args:
+        explanation (lime.explanation.Explanation): Fitted LIME
+            explanation. Only the ``as_list(label)`` method is used, so
+            any object exposing that method is accepted.
+        label (int): Class index passed to ``explanation.as_list``. For
+            binary classifiers, ``1`` corresponds to the positive class.
+            Defaults to ``1``.
+        title (str or None): Chart title. When ``None``, no title is
+            drawn. Defaults to ``None``.
+        xlabel (str): X-axis label. Defaults to
+            ``"Contribution to prediction"``.
+        ylabel (str or None): Y-axis label. When ``None``, no label is
+            drawn. Defaults to ``None``.
+        positive_color (str): Fill color for the bars with positive
+            weight. Defaults to ``"#1a3d6b"``.
+        negative_color (str): Fill color for the bars with negative
+            weight. Defaults to ``"#a32e2e"``.
+        positive_label (str): Legend label for positive contributions.
+            Defaults to ``"For"``.
+        negative_label (str): Legend label for negative contributions.
+            Defaults to ``"Against"``.
+        bar_height (float): Relative height of the bars. Defaults to 0.7.
+        bar_edge_color (str): Edge color of the bars. Defaults to
+            ``"black"``.
+        bar_edge_width (float): Edge line width of the bars. Defaults to
+            0.8.
+        show_values (bool): If ``True``, the weight of each bar is
+            annotated next to its tip. Defaults to ``True``.
+        value_size (float): Font size of the annotation. Defaults to 9.
+        value_format (str): Format string applied to each weight. Defaults
+            to ``"{:+.3f}"``, which shows the sign and three decimals.
+        value_offset_ratio (float): Offset of the annotation relative to
+            the largest absolute weight, as a fraction. Defaults to 0.02.
+        show_legend (bool): If ``True``, a legend with the two
+            contribution directions is drawn. Defaults to ``True``.
+        legend_loc (str): Legend location. Defaults to ``"lower right"``.
+        legend_frame (bool): If ``True``, a boxed legend frame is drawn.
+            Defaults to ``False``.
+        legend_fontsize (float or None): Legend font size. When ``None``,
+            ``tick_size`` is used.
+        label_size (float): Font size of the axis labels. Defaults to 11.
+        title_size (float): Font size of the title. Defaults to 12.
+        tick_size (float): Font size of the tick labels. Defaults to 10.
+        title_loc (str): Title alignment. Defaults to ``"center"``.
+        pads (tuple of float): Padding values ``(pad_x, pad_y, pad_title)``.
+            Defaults to ``(9, 9, 12)``.
+        show_grid (bool): If ``True``, a dotted grid is drawn along the
+            x-axis. Defaults to ``False``.
+        xlim_padding (float): Fraction of the data range added on each
+            side of the x-axis. Defaults to 0.20.
+        figsize (tuple of float): Figure size in inches. Defaults to
+            ``(8, 5)``.
+        render (bool): If ``True``, the figure is passed to
+            :func:`render_figure` for inline rendering. Defaults to
+            ``True``.
+        fmt ({"svg", "png"}): Output format. Defaults to ``"svg"``.
+        dpi (int): Resolution when ``fmt="png"``. Defaults to ``100``.
+
+    Returns:
+        tuple: ``(fig, ax)`` where ``fig`` is the matplotlib figure and
+        ``ax`` is the ``Axes``.
+
+    Raises:
+        TypeError: If ``explanation`` does not expose ``as_list``, if any
+            string argument is not a string, or if ``render`` is not a
+            boolean.
+        ValueError: If the explanation returns no weights, or if
+            ``xlim_padding`` is negative.
+    """
+    _validate_bool(render, "render")
+    _validate_bool(show_values, "show_values")
+    _validate_bool(show_legend, "show_legend")
+    _validate_bool(legend_frame, "legend_frame")
+    _validate_bool(show_grid, "show_grid")
+    _validate_figsize(figsize)
+    _validate_pads(pads)
+    _validate_string(xlabel, "xlabel")
+    _validate_string(positive_color, "positive_color")
+    _validate_string(negative_color, "negative_color")
+    _validate_string(bar_edge_color, "bar_edge_color")
+
+    if not isinstance(xlim_padding, (int, float)) or isinstance(xlim_padding, bool):
+        raise TypeError("'xlim_padding' must be a number.")
+    if xlim_padding < 0:
+        raise ValueError("'xlim_padding' must be non-negative.")
+
+    if not hasattr(explanation, "as_list"):
+        raise TypeError(
+            "'explanation' must expose an 'as_list' method "
+            "(a LIME Explanation object is expected)."
+        )
+
+    pairs = explanation.as_list(label=label)
+    if not pairs:
+        raise ValueError(
+            "The explanation returned no weights for the given label."
+        )
+
+    features = [str(p[0]) for p in pairs]
+    values = [float(p[1]) for p in pairs]
+
+    order = np.argsort(np.abs(values))[::-1]
+    features = [features[i] for i in order]
+    values = [values[i] for i in order]
+
+    features = features[::-1]
+    values = values[::-1]
+
+    n_features = len(features)
+    y_pos = np.arange(n_features)
+
+    colors = [
+        positive_color if v >= 0 else negative_color for v in values
+    ]
+
+    pad_x, pad_y, pad_title = pads
+
+    if legend_fontsize is None:
+        legend_fontsize = tick_size
+
+    fig, ax = plt.subplots(figsize=figsize)
+
+    ax.barh(
+        y_pos,
+        values,
+        height=bar_height,
+        color=colors,
+        edgecolor=bar_edge_color,
+        linewidth=bar_edge_width,
+    )
+
+    ax.axvline(0, color="black", linewidth=0.8, zorder=3)
+
+    max_abs = max((abs(v) for v in values), default=1.0)
+    offset = value_offset_ratio * max_abs
+
+    if show_values:
+        for y, v in zip(y_pos, values):
+            ha = "left" if v >= 0 else "right"
+            x_pos = v + (offset if v >= 0 else -offset)
+            ax.text(
+                x_pos,
+                y,
+                value_format.format(v),
+                ha=ha,
+                va="center",
+                fontsize=value_size,
+                color="black",
+            )
+
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(features, fontsize=tick_size)
+
+    ax.set_xlabel(xlabel, fontsize=label_size, labelpad=pad_x)
+    if ylabel is not None:
+        ax.set_ylabel(ylabel, fontsize=label_size, labelpad=pad_y)
+
+    if title is not None:
+        ax.set_title(title, fontsize=title_size, pad=pad_title, loc=title_loc)
+
+    x_min = min(min(values), 0.0)
+    x_max = max(max(values), 0.0)
+    span = x_max - x_min
+    if span == 0:
+        span = 1.0
+
+    ax.set_xlim(
+        x_min - span * xlim_padding,
+        x_max + span * xlim_padding,
+    )
+
+    _style_axes(ax, tick_size)
+
+    if show_grid:
+        ax.xaxis.grid(True, linestyle=":", linewidth=0.7, alpha=0.7)
+        ax.set_axisbelow(True)
+
+    if show_legend:
+        from matplotlib.patches import Patch
+
+        legend_handles = [
+            Patch(
+                facecolor=positive_color,
+                edgecolor=bar_edge_color,
+                label=positive_label,
+            ),
+            Patch(
+                facecolor=negative_color,
+                edgecolor=bar_edge_color,
+                label=negative_label,
+            ),
+        ]
+        ax.legend(
+            handles=legend_handles,
+            loc=legend_loc,
+            frameon=legend_frame,
+            facecolor="white" if legend_frame else "none",
+            edgecolor="black" if legend_frame else "none",
+            framealpha=1.0 if legend_frame else 0.0,
+            fontsize=legend_fontsize,
+        )
+
+    plt.tight_layout()
+
+    if render:
+        render_figure(fig, fmt=fmt, dpi=dpi)
+
+    return fig, ax
 
 
 def render_figure(fig, fmt="svg", dpi=100):
@@ -1108,6 +1725,12 @@ def _validate_pads(pads):
         )
 
 
+def _validate_positive_int(value, name):
+    """Validate that ``value`` is a strictly positive integer."""
+    if not isinstance(value, int) or isinstance(value, bool) or value <= 0:
+        raise ValueError(f"'{name}' must be a positive integer.")
+
+
 def _validate_sequence(value, name):
     """Validate that ``value`` is a non-empty tuple or list."""
     if not isinstance(value, (tuple, list)):
@@ -1128,6 +1751,51 @@ def _validate_two_strings(value, name):
         raise TypeError(f"'{name}' must be a tuple or list of two strings.")
     if not all(isinstance(v, str) for v in value):
         raise TypeError(f"All elements of '{name}' must be strings.")
+
+
+def _youden_scores(y_true, y_score):
+    """Compute the Youden optimal threshold and its associated metrics.
+
+    Args:
+        y_true (array-like): Binary ground-truth labels.
+        y_score (array-like): Positive-class scores.
+
+    Returns:
+        dict: Dictionary with keys ``threshold``, ``sensitivity``,
+        ``specificity``, ``youden_index``, ``n_pos`` and ``n_neg``.
+
+    Raises:
+        ValueError: If the two arrays have different lengths, or if
+            either class is absent from ``y_true``.
+    """
+    y_true = np.asarray(y_true)
+    y_score = np.asarray(y_score, dtype=float)
+
+    if y_true.shape != y_score.shape:
+        raise ValueError(
+            "'y_true' and 'y_score' must have the same length."
+        )
+
+    n_pos = int((y_true == 1).sum())
+    n_neg = int((y_true == 0).sum())
+
+    if n_pos == 0 or n_neg == 0:
+        raise ValueError(
+            "'y_true' must contain both classes to compute the Youden index."
+        )
+
+    fpr, tpr, thresholds = roc_curve(y_true, y_score)
+    youden = tpr - fpr
+    best_idx = int(np.argmax(youden))
+
+    return {
+        "threshold": float(thresholds[best_idx]),
+        "sensitivity": float(tpr[best_idx]),
+        "specificity": float(1.0 - fpr[best_idx]),
+        "youden_index": float(youden[best_idx]),
+        "n_pos": n_pos,
+        "n_neg": n_neg,
+    }
 
 
 def _table_style_rules(left_align_positions=(1,)) -> list[CSSDict]:

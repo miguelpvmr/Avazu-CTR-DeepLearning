@@ -42,6 +42,8 @@ project:
       title: "Análisis Exploratorio"
     - file: notebooks/02_sklearn_mlp_training.ipynb
       title: "Entrenamiento con Sklearn"
+    - file: notebooks/04_mlp_evaluation.ipynb
+      title: "Evaluación Comparativa"
 
 site:
   template: book-theme

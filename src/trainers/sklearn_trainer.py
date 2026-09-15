@@ -912,7 +912,8 @@ def grid_results_table(
     the combinations by mean AUC in descending order, and builds a table
     where the first columns are the hyperparameters and the last column is
     the AUC in ``mean ± std`` format. The number of rows shown is
-    controlled by ``top_n``.
+    controlled by ``top_n``. Every cell is centered horizontally and
+    vertically.
 
     Args:
         results_path (str or pathlib.Path): Path to the JSON checkpoint.
@@ -995,20 +996,22 @@ def grid_results_table(
 
     df_table = pd.DataFrame(rows)
 
-    n_cols = len(df_table.columns)
-    left_align = tuple(range(1, n_cols))
+    center_props = {
+        "text-align": "center",
+        "vertical-align": "middle",
+    }
 
     styled = (
         df_table.style
         .hide(axis="index")
-        .set_table_styles(_table_style_rules(left_align_positions=left_align))
+        .set_properties(**center_props) # type: ignore
+        .set_table_styles(_table_style_rules(left_align_positions=()))
     )
 
     if render:
         _render_styled(styled)
 
     return df_table
-
 
 def show_grid_results(
     base_path,
