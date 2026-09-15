@@ -1,0 +1,351 @@
+/* User Provided Stylesheet */
+
+/* =============================================================================
+   PREDICCIÓN DE CLICS EN PUBLICIDAD DIGITAL — CUSTOM THEME OVERRIDES
+   =============================================================================
+   @version    : 1.3.0
+   @authors    : Juan Camilo Mendoza Arango          <cjarango@uninorte.edu.co>
+                 Miguel Ángel Pérez Vargas           <vargasmiguel@uninorte.edu.co>
+   @date       : 13/09/2026
+   @scope      : MyST-flavoured static site (mystmd.org renderer)
+   @purpose    : Branding, Spanish localisation, and layout refinements
+   -----------------------------------------------------------------------------
+   Sections:
+     1. Global Interface & Branding
+     2. Navigation & Structure Labels
+     3. Component & Block Labels
+     4. Author / Frontmatter Header
+     5. Sidebar Navigation
+     6. Footer Navigation Cards
+     7. MyST Compatibility Patches
+   ============================================================================= */
+
+
+/* =============================================================================
+   1. GLOBAL INTERFACE & BRANDING
+   ============================================================================= */
+
+:root {
+  color-scheme: light
+}
+
+/* Replace the default site title with a custom heading */
+span.text-md.sm\:text-xl.tracking-tight.sm\:mr-5 {
+  font-size: 0 !important;
+}
+
+span.text-md.sm\:text-xl.tracking-tight.sm\:mr-5::after {
+  content: "Predicción de Clics en Publicidad Digital";
+  font-size: 1.1rem !important;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: inherit;
+  visibility: visible;
+}
+
+/* Hide MyST footer branding elements */
+footer a[href*="mystmd.org"],
+span.self-center.ml-2.text-sm,
+svg[viewBox="0 0 100 100"] {
+  display: none !important;
+  pointer-events: none;
+}
+
+
+/* =============================================================================
+   2. NAVIGATION & STRUCTURE LABELS
+   ============================================================================= */
+
+/* Outline sidebar header → "CONTENIDO" */
+.myst-outline-header {
+  font-size: 0 !important;
+}
+
+.myst-outline-header::before {
+  content: "CONTENIDO";
+  font-size: 0.875rem !important;
+  line-height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  flex-grow: 1;
+  visibility: visible;
+}
+
+/* Restore font size on collapsible items (reset the parent override) */
+.myst-outline-collapsible {
+  font-size: initial !important;
+}
+
+/* In-page TOC header → "En esta página" */
+.page-toc-header {
+  font-size: 0 !important;
+}
+
+.page-toc-header::after {
+  content: "En esta página";
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  visibility: visible;
+}
+
+
+/* =============================================================================
+   3. COMPONENT & BLOCK LABELS
+   ============================================================================= */
+
+/* Code-block dropdown toggle labels */
+.myst-dropdown-header-title {
+  font-size: 0 !important;
+}
+
+.myst-dropdown-header-title::after {
+  content: "Mostrar código";
+  font-size: 1rem;
+  visibility: visible;
+}
+
+details[open] .myst-dropdown-header-title::after {
+  content: "Ocultar código";
+}
+
+/* Bibliography section heading → "Referencias" */
+.myst-bibliography-header {
+  font-size: 0 !important;
+}
+
+.myst-bibliography-header::before {
+  content: "Referencias";
+  font-size: 1.125rem !important;
+  font-weight: 600 !important;
+  display: inline-block;
+  visibility: visible;
+}
+
+.myst-bibliography-header a {
+  font-size: 1.125rem !important;
+  margin-left: 0.5rem;
+  visibility: visible;
+}
+
+
+/* =============================================================================
+   4. AUTHOR / FRONTMATTER HEADER
+   =============================================================================
+   Goal: render authors as a flowing inline list in journal-article style,
+   rather than MyST's default grid layout.
+   ============================================================================= */
+
+/* Reset spacing on the author block */
+header.myst-fm-authors-affiliations {
+  margin-top: 2.5rem !important;
+  margin-bottom: 1rem !important;
+  padding-top: 0 !important;
+  border-top: none !important;
+}
+
+/* Switch from grid to inline flow */
+.myst-fm-authors-grid {
+  display: block !important;
+  line-height: 1.6 !important;
+}
+
+/* Hide institutional / role labels (icons remain intact) */
+.myst-fm-authors-header-authors,
+.myst-fm-authors-header-affil,
+.myst-fm-author-roles,
+.myst-fm-author-affiliations,
+.myst-fm-affiliations,
+.myst-fm-affiliation-col {
+  display: none !important;
+}
+
+/* Prepend an "AUTORES: " label before the author list */
+.myst-fm-authors-grid::before {
+  content: "Autores: ";
+  font-size: 1rem;
+  font-weight: 400;
+  margin-right: 0.4rem;
+}
+
+/* Render each author column inline (this is what un-stacks the list) */
+.myst-fm-author-col {
+  display: inline !important;
+}
+
+/* Neutralise MyST's bold injection and normalise sizing */
+span.myst-fm-author,
+button.myst-fm-author-popover,
+span.myst-fm-author-name {
+  font-weight: 400 !important;
+  font-size: 1rem !important;
+}
+
+/* Comma separator between authors, removed after the last one */
+.myst-fm-author-col::after {
+  content: ", ";
+  font-weight: 400;
+}
+
+.myst-fm-author-col:not(:has(~ .myst-fm-author-col))::after {
+  content: "" !important;
+  display: none !important;
+}
+
+/* --- Spacing normalisation: Markdown pages vs. Jupyter notebooks --- */
+.myst-article-content > :first-child,
+.myst-notebook-cell:first-of-type,
+.myst-notebook-cell:first-of-type > :first-child,
+article > div > h1:first-of-type,
+article > div > h2:first-of-type {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* =============================================================================
+   5. SIDEBAR NAVIGATION
+   ============================================================================= */
+
+/* Rename the first TOC item to "Introducción" */
+.myst-toc-item:first-child {
+  font-size: 0 !important;
+}
+
+.myst-toc-item:first-child::before {
+  content: "Introducción";
+  font-size: 1rem !important;
+  font-family: inherit !important;
+  font-weight: 400;
+  color: inherit;
+  display: inline-block;
+  visibility: visible;
+}
+
+/* Active state: persistent blue highlight */
+.myst-toc-item.active:first-child,
+.myst-toc-item.active:first-child:hover {
+  background-color: #deedfe !important;
+  border-radius: 0.375rem !important;
+}
+
+.myst-toc-item.active:first-child::before {
+  color: #111827 !important;
+}
+
+/* Hover state (inactive only): light grey highlight */
+.myst-toc-item:first-child:not(.active):hover {
+  background-color: #eff2f6 !important;
+  border-radius: 0.375rem !important;
+}
+
+/* Neutralise inner wrapper styling */
+.myst-toc-item:first-child > * {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+
+/* =============================================================================
+   6. FOOTER NAVIGATION CARDS
+   ============================================================================= */
+
+/* A. Strip underlines from footer link cards */
+a.myst-footer-link,
+a.myst-footer-link:hover,
+a.myst-footer-link *,
+a.myst-footer-link *:hover {
+  text-decoration: none !important;
+}
+
+/* Preserve the blue border on hover */
+a.myst-footer-link:hover {
+  border-color: #2563eb !important;
+}
+
+/* B. Standardise title typography for both native and injected items.
+      Multiple selectors added to support Local (/) and GitHub Pages paths. */
+a.myst-footer-link .flex-grow > div:not(.myst-footer-link-group),
+a.myst-footer-link[href="/"] .flex-grow::after,
+a.myst-footer-link[href$="/Avazu-CTR-DeepLearning/"] .flex-grow::after,
+a.myst-footer-link[href$="/Avazu-CTR-DeepLearning"] .flex-grow::after {
+  font-family: inherit !important;
+  font-size: 1.01rem !important;
+  display: block !important;
+}
+
+/* C. Secondary labels ("Anterior" / "Siguiente") */
+.myst-footer-link-group {
+  display: block !important;
+  visibility: visible !important;
+  font-size: 0.75rem !important;
+  font-weight: 400 !important;
+  margin-bottom: 0.25rem;
+}
+
+/* D. Inject "Introducción" title for the root-page footer card.
+      Uses 'endsWith' ($=) to capture the base URL in GitHub Actions regardless
+      of trailing slashes, preventing errors across deployment environments. */
+a.myst-footer-link[href="/"] .flex-grow,
+a.myst-footer-link[href$="/Avazu-CTR-DeepLearning/"] .flex-grow,
+a.myst-footer-link[href$="/Avazu-CTR-DeepLearning"] .flex-grow {
+  font-size: 0 !important;
+  text-align: right;
+}
+
+a.myst-footer-link[href="/"] .flex-grow::after,
+a.myst-footer-link[href$="/Avazu-CTR-DeepLearning/"] .flex-grow::after,
+a.myst-footer-link[href$="/Avazu-CTR-DeepLearning"] .flex-grow::after {
+  content: "Introducción";
+  visibility: visible !important;
+}
+
+/* E. Universal hover colour for all footer card titles */
+a.myst-footer-link:hover .flex-grow > div:not(.myst-footer-link-group),
+a.myst-footer-link:hover .flex-grow::after {
+  color: #2563eb !important;
+}
+
+/* F. Card container styling */
+.block-nav-link {
+  padding: 1.25rem !important;
+  border-radius: 8px !important;
+  background-color: transparent !important;
+}
+
+
+/* =============================================================================
+   7. MYST COMPATIBILITY PATCHES
+   =============================================================================
+   Applied after a MyST update that changed the generated DOM. These rules
+   restore the previous behaviour for the in-page outline, the author list
+   separator and the article title. Remove them once the upstream selectors
+   stabilise again.
+   ============================================================================= */
+
+/* A. Hide the page H1 from the in-page outline.
+      MyST now injects the article title as the first item of the outline,
+      which duplicates the heading already shown above the content. */
+.myst-outline-list > .myst-outline-item:first-child {
+  display: none !important;
+}
+
+/* B. Restore the comma separator between authors.
+      The author popover button is no longer wrapped in .myst-fm-author-col,
+      so the separator has to be attached to the button directly. */
+button.myst-fm-author-popover::after {
+  content: ", ";
+  font-weight: 400;
+}
+
+button.myst-fm-author-popover:last-of-type::after {
+  content: "" !important;
+}
+
+/* C. Hide the body H1 that duplicates the frontmatter title.
+      MyST extracts the first H1 of a notebook as the article title and
+      renders it a second time inside the notebook block. The duplicated
+      heading lives at `.myst-jp-nb-block > h1.relative.group`. */
+.myst-jp-nb-block > h1.relative.group,
+.myst-jp-nb-block > h1:first-child {
+  display: none !important;
+}
