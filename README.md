@@ -56,20 +56,32 @@ El repositorio utiliza una arquitectura modular para la gestión de datos, el de
 │   └── workflows/
 │       └── deploy.yaml
 ├── data/
+│   ├── predictions/
+│   │   ├── mlp_100_50_pipeline_predictions.parquet
+│   │   └── mlp_100_pipeline_predictions.parquet
 │   ├── raw/
 │   │   ├── train.gz
 │   │   └── train.parquet
 │   └── processed/
 │       ├── train.parquet
-│       ├── val.parquet
 │       └── test.parquet
+├── models/
+│   ├── sklearn/
+│   └── pyspark/
 ├── notebooks/
-│   └── 01_exploratory_data_analysis.ipynb
+│   ├── 01_exploratory_data_analysis.ipynb
+│   ├── 02_sklearn_mlp_training.ipynb
+│   ├── 03_spark_mlp_training.ipynb
+│   └── 04_mlp_evaluation.ipynb
 ├── src/
-│   ├── models/
+│   ├── trainers/
+│   │   ├── pyspark_trainer.py
+│   │   └── sklearn_trainer.py
 │   └── utils/
+│       ├── build_features.py
 │       ├── convert_to_parquet.py
-│       └── duckdb_eda_toolkit.py
+│       ├── duckdb_eda_toolkit.py
+│       └── evaluation_toolkit.py
 ├── custom.css
 ├── environment.yml
 ├── LICENSE
