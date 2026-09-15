@@ -15,9 +15,8 @@ Provides two public entry points:
 
 Leakage guarantees
 ------------------
-To match the behavior of the scikit-learn pipeline exactly, every
-state-dependent transformation is fit on the training partition of the
-fold being processed:
+Every state-dependent transformation is fit on the training partition of
+the fold being processed:
 
 - Dominant categories and top-K lists are computed inside the fold loop,
   on the training partition only.
@@ -61,7 +60,7 @@ from tqdm.auto import tqdm
 # ---------------------------------------------------------------------------
 # Metadata
 # ---------------------------------------------------------------------------
-__version__ = "1.2.0"
+__version__ = "1.2.2"
 
 __author__ = (
     "Juan Camilo Mendoza Arango <cjarango@uninorte.edu.co>, "
@@ -484,13 +483,17 @@ def _compute_dominants(train_df: DataFrame) -> dict:
 def _compute_top_k_lists(train_df: DataFrame) -> dict:
     """Return the list of top-K categories for each Top-K column.
 
-    Only uses column frequencies, never the target column.
+    Only uses column frequencies, never the target column. The values are
+    stored as strings so that they can be compared against the string
+    version of the column during the transformation, regardless of the
+    original dtype of the column.
 
     Args:
         train_df (pyspark.sql.DataFrame): Training data.
 
     Returns:
-        dict: Mapping from column name to the list of its top-K values.
+        dict: Mapping from column name to the list of its top-K values,
+        all cast to strings.
     """
     top_k_lists = {}
     for col_name, k in TOP_K.items():
@@ -502,7 +505,7 @@ def _compute_top_k_lists(train_df: DataFrame) -> dict:
             .limit(k)
             .collect()
         )
-        top_k_lists[col_name] = [row[col_name] for row in rows]
+        top_k_lists[col_name] = [str(row[col_name]) for row in rows]
     return top_k_lists
 
 
@@ -513,12 +516,15 @@ def _apply_categorical_transforms(
 ) -> DataFrame:
     """Apply dichotomization and Top-K + Other on the DataFrame.
 
-    Deterministic, no target involvement.
+    Deterministic, no target involvement. Top-K columns are cast to
+    string before the transformation so that the ``Other`` fallback can
+    be assigned to columns that were originally numeric.
 
     Args:
         df (pyspark.sql.DataFrame): Input DataFrame.
         dominants (dict): Mapping from column to its dominant value.
-        top_k_lists (dict): Mapping from column to its top-K values.
+        top_k_lists (dict): Mapping from column to its top-K values. All
+            values are strings.
 
     Returns:
         pyspark.sql.DataFrame: Transformed DataFrame.
@@ -538,9 +544,10 @@ def _apply_categorical_transforms(
         )
 
     for col_name, top_values in top_k_lists.items():
+        col_str = F.col(col_name).cast("string")
         df = df.withColumn(
             col_name,
-            F.when(F.col(col_name).isin(top_values), F.col(col_name))
+            F.when(col_str.isin(top_values), col_str)
              .otherwise(F.lit("Other")),
         )
 
@@ -599,44 +606,78 @@ def _probe_num_features(
     smoothing: float,
     seed: int,
 ) -> int:
-    """Return the feature dimension via a probe fit on the first fold.
+    """Return the feature dimension via a probe fit on the first fold."""
 
-    Uses the first fold's training partition with its own fold-specific
-    statistics, builds the encoding stages without the MLP and reads the
-    size of the resulting features vector. This guarantees the dimension
-    matches whatever the actual pipeline produces in the main loop.
-
-    Args:
-        folds (list): List of fold DataFrames.
-        fold_stats (list): List of ``(dominants, top_k_lists)`` per fold.
-        num_folds (int): Number of folds.
-        smoothing (float): Smoothing for the target encoder.
-        seed (int): Random seed.
-
-    Returns:
-        int: Number of features feeding the MLP input layer.
-    """
     train_folds = [folds[j] for j in range(num_folds) if j != 0]
+
     train_part = train_folds[0]
     for tf in train_folds[1:]:
         train_part = train_part.union(tf)
 
     dominants, top_k_lists = fold_stats[0]
+
     train_part_t = _apply_categorical_transforms(
-        train_part, dominants, top_k_lists,
+        train_part,
+        dominants,
+        top_k_lists,
     )
 
     probe_stages = _build_encoding_stages(smoothing)
-    sample = train_part_t.sample(fraction=0.01, seed=seed)
-    probe_model = Pipeline(stages=probe_stages).fit(sample)
-    sample_out = probe_model.transform(sample.limit(1))
-    return int(
-        sample_out.select(F.size(F.col("features"))).first()[0]
+
+    sample = train_part_t.sample(
+        fraction=0.01,
+        seed=seed,
     )
 
+    print("\n[PROBE] Sample rows:", sample.count())
+
+    current_df = sample
+
+    for i, stage in enumerate(probe_stages):
+        print(
+            f"[PROBE] Stage {i + 1}/{len(probe_stages)}: "
+            f"{stage.__class__.__name__}"
+        )
+
+        try:
+            stage_model = stage.fit(current_df)
+            current_df = stage_model.transform(current_df)
+
+            print(
+                f"[PROBE] OK -> columns: "
+                f"{len(current_df.columns)}"
+            )
+
+        except Exception as e:
+            print(
+                f"\n[PROBE] FAILED at stage {i + 1}: "
+                f"{stage.__class__.__name__}"
+            )
+            print("Python exception type:", type(e))
+            print("Python exception:", str(e))
+            raise
+
+    feature_vector = (
+        current_df
+        .select("features")
+        .first()["features"]
+    )
+
+    num_features = len(feature_vector)
+
+    print(f"[PROBE] Number of features: {num_features}")
+
+    return int(num_features)
 
 def _build_encoding_stages(smoothing: float) -> list:
     """Build the encoding stages that precede the MLP.
+
+    The TargetEncoder in PySpark 4.x only accepts numeric columns as
+    input. Columns that arrive as strings (``app_id``, ``site_domain``,
+    ``site_id``, ``device_model``, ``C14``, ``C17``) are first converted
+    to indices with a StringIndexer. The indices are then passed to the
+    TargetEncoder. The temporary index columns are not part of the final
+    feature vector; only the target-encoded outputs are.
 
     Args:
         smoothing (float): Smoothing for the target encoder.
@@ -647,7 +688,9 @@ def _build_encoding_stages(smoothing: float) -> list:
     categorical = list(TOP_K.keys()) + [TIME_BAND]
     idx_cols = [f"{c}_idx" for c in categorical]
     ohe_cols = [f"{c}_ohe" for c in categorical]
+
     te_inputs = list(TE_HYBRID) + list(TE_PURE)
+    te_idx_cols = [f"{c}_teidx" for c in te_inputs]
     te_outputs = [f"{c}_te" for c in te_inputs]
 
     final_input_cols = (
@@ -668,6 +711,14 @@ def _build_encoding_stages(smoothing: float) -> list:
             )
             for c in categorical
         ],
+        *[
+            StringIndexer(
+                inputCol=c,
+                outputCol=f"{c}_teidx",
+                handleInvalid="keep",
+            )
+            for c in te_inputs
+        ],
         OneHotEncoder(
             inputCols=idx_cols,
             outputCols=ohe_cols,
@@ -675,7 +726,7 @@ def _build_encoding_stages(smoothing: float) -> list:
             handleInvalid="keep",
         ),
         TargetEncoder(
-            inputCols=te_inputs,
+            inputCols=te_idx_cols,
             outputCols=te_outputs,
             labelCol=TARGET,
             targetType="binary",

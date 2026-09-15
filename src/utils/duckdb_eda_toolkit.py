@@ -105,35 +105,36 @@ __authors_detail__ = [
 # ---------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------
-import io
 import base64
+import io
+
+import matplotlib.pyplot as plt
 
 # ---------------------------------------------------------------------------
 # Third-party
 # ---------------------------------------------------------------------------
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from IPython.display import HTML, display
 
 # ---------------------------------------------------------------------------
 # Public API declaration
 # ---------------------------------------------------------------------------
 __all__ = [
-    "render_figure",
-    "plot_distribution_pair",
-    "plot_categorical_distribution",
-    "plot_categorical_distribution_pair",
-    "plot_temporal_overview",
-    "plot_ctr_by_hour",
     "categorical_association_table",
-    "plot_spearman_heatmap",
     "categorical_cardinality_table",
     "categorical_coverage_table",
-    "show_encoding_strategy_table",
-    "relation_integrity_table",
-    "show_preview_table",
     "create_split_column",
+    "plot_categorical_distribution",
+    "plot_categorical_distribution_pair",
+    "plot_ctr_by_hour",
+    "plot_distribution_pair",
+    "plot_spearman_heatmap",
+    "plot_temporal_overview",
+    "relation_integrity_table",
+    "render_figure",
+    "show_encoding_strategy_table",
+    "show_preview_table",
     "split_summary_table",
 ]
 
@@ -577,13 +578,12 @@ def plot_categorical_distribution(
     if not isinstance(bar_width, (int, float)) or not (0 < bar_width <= 1):
         raise ValueError("'bar_width' must be a number in the interval (0, 1].")
 
-    if n is not None:
-        if (
-            not isinstance(n, (int, float))
-            or isinstance(n, bool)
-            or n <= 0
-        ):
-            raise ValueError("'n' must be None or a positive number.")
+    if n is not None and (
+        not isinstance(n, (int, float))
+        or isinstance(n, bool)
+        or n <= 0
+    ):
+        raise ValueError("'n' must be None or a positive number.")
 
     _validate_ylim(ylim)
     _validate_y_step(y_step)
@@ -1494,35 +1494,32 @@ def categorical_association_table(
             "'add_p_adj' requires a non-None 'p_adjust_method'."
         )
 
-    if min_effect_size is not None:
-        if (
-            not isinstance(min_effect_size, (int, float))
-            or isinstance(min_effect_size, bool)
-            or not (0 <= min_effect_size <= 1)
-        ):
-            raise ValueError(
-                "'min_effect_size' must be None or a number in [0, 1]."
-            )
+    if min_effect_size is not None and (
+        not isinstance(min_effect_size, (int, float))
+        or isinstance(min_effect_size, bool)
+        or not (0 <= min_effect_size <= 1)
+    ):
+        raise ValueError(
+            "'min_effect_size' must be None or a number in [0, 1]."
+        )
 
-    if min_expected is not None:
-        if (
-            not isinstance(min_expected, (int, float))
-            or isinstance(min_expected, bool)
-            or min_expected <= 0
-        ):
-            raise ValueError(
-                "'min_expected' must be None or a positive number."
-            )
+    if min_expected is not None and (
+        not isinstance(min_expected, (int, float))
+        or isinstance(min_expected, bool)
+        or min_expected <= 0
+    ):
+        raise ValueError(
+            "'min_expected' must be None or a positive number."
+        )
 
-    if max_frac_below_5 is not None:
-        if (
-            not isinstance(max_frac_below_5, (int, float))
-            or isinstance(max_frac_below_5, bool)
-            or not (0 <= max_frac_below_5 <= 1)
-        ):
-            raise ValueError(
-                "'max_frac_below_5' must be None or a number in [0, 1]."
-            )
+    if max_frac_below_5 is not None and (
+        not isinstance(max_frac_below_5, (int, float))
+        or isinstance(max_frac_below_5, bool)
+        or not (0 <= max_frac_below_5 <= 1)
+    ):
+        raise ValueError(
+            "'max_frac_below_5' must be None or a number in [0, 1]."
+        )
 
     if not isinstance(hide_empty_rows, bool):
         raise TypeError("'hide_empty_rows' must be a boolean.")
@@ -1895,7 +1892,7 @@ def plot_spearman_heatmap(
 
     mask = np.triu(np.ones((n, n), dtype=bool), k=1)
 
-    pad_x, pad_y, pad_title = pads
+    _pad_x, pad_y, pad_title = pads
 
     fig, ax = plt.subplots(figsize=figsize)
 
@@ -2638,7 +2635,7 @@ def create_split_column(
     ):
         raise ValueError("'train_ratio' must be a number in (0, 1).")
 
-    threshold = int(round(train_ratio * 100))
+    threshold = round(train_ratio * 100)
     view_name = view_name or f"{relation}_split"
 
     con.execute(f"""
@@ -2853,8 +2850,7 @@ def _holm_bonferroni(p_values):
     running_max = 0.0
     for i in range(m):
         adj = (m - i) * sorted_p[i]
-        if adj > running_max:
-            running_max = adj
+        running_max = max(running_max, adj)
         adjusted[i] = min(running_max, 1.0)
 
     result = np.empty(m, dtype=float)
@@ -2982,23 +2978,20 @@ def _validate_figsize(figsize):
 
 def _validate_ylim(ylim):
     """Validate an optional ``(ymin, ymax)`` y-limits tuple."""
-    if ylim is not None:
-        if not isinstance(ylim, (tuple, list)) or len(ylim) != 2:
-            raise TypeError("'ylim' must be None or a tuple/list of length 2.")
+    if ylim is not None and (not isinstance(ylim, (tuple, list)) or len(ylim) != 2):
+        raise TypeError("'ylim' must be None or a tuple/list of length 2.")
 
 
 def _validate_y_step(y_step):
     """Validate an optional positive y-axis step."""
-    if y_step is not None:
-        if not _is_number(y_step) or y_step <= 0:
-            raise ValueError("'y_step' must be None or a positive number.")
+    if y_step is not None and (not _is_number(y_step) or y_step <= 0):
+        raise ValueError("'y_step' must be None or a positive number.")
 
 
 def _validate_x_step(x_step):
     """Validate an optional positive x-axis step."""
-    if x_step is not None:
-        if not _is_number(x_step) or x_step <= 0:
-            raise ValueError("'x_step' must be None or a positive number.")
+    if x_step is not None and (not _is_number(x_step) or x_step <= 0):
+        raise ValueError("'x_step' must be None or a positive number.")
 
 
 def _validate_y_format(y_format):
@@ -3073,37 +3066,6 @@ def _apply_yaxis_settings(ax, ylim=None, y_step=None, y_format=None, yticks=None
         ax.yaxis.set_major_formatter(plt.FormatStrFormatter(y_format))
     if yticks is not None:
         ax.set_yticks(yticks)
-
-
-def _apply_year_axis(ax, interval=2, formatter="%Y"):
-    """Set a year locator and formatter on the x-axis of ``ax``."""
-    import matplotlib.dates as mdates
-    ax.xaxis.set_major_locator(mdates.YearLocator(interval))
-    ax.xaxis.set_major_formatter(mdates.DateFormatter(formatter))
-
-
-def _boxplot_kwargs(box_facecolor="white", box_width=0.6):
-    """Return the shared keyword arguments used by every boxplot call."""
-    return dict(
-        widths=box_width,
-        patch_artist=True,
-        flierprops={
-            "marker": "o",
-            "markersize": 1.5,
-            "markerfacecolor": "black",
-            "markeredgecolor": "black",
-            "markeredgewidth": 0.5,
-        },
-        boxprops={
-            "facecolor": box_facecolor,
-            "edgecolor": "black",
-            "linewidth": 0.8,
-        },
-        whiskerprops={"color": "black", "linewidth": 0.8},
-        capprops={"color": "black", "linewidth": 0.8},
-        medianprops={"color": "black", "linewidth": 0.8},
-    )
-
 
 def _table_style_rules(left_align_positions=(1,)):
     """Return the shared HTML style rules used by every styled table.
